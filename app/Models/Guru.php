@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class guru extends Model
+class Guru extends Model
 {
-    protected $table = 'guru'; // pastikan ini ada
+    use HasFactory;
 
     protected $fillable = [
         'nama',
+        'user_id',
         'alamat',
         'nomor_handphone',
         'jenis_kelamin',
         'tanggal_lahir',
     ];
 
-    public function mapel()
+    public function user()
     {
-        return $this->hasMany(Mapel::class);
+        return $this->belongsTo(User::class);
     }
 }

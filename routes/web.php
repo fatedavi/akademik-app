@@ -10,31 +10,20 @@ use App\Http\Controllers\HomeController; // <- ini perlu
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\GuruController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SubjectController;
 
 // Aktifkan route bawaan Laravel termasuk email verification
+
+// ===================================================
+//  Auth & Verification
+// ===================================================
+
+// Aktifkan fitur login, register, reset password, verifikasi email
 Auth::routes(['verify' => true]);
 
-// Landing Page
-Route::get('/', [LandingController::class, 'index'])->name('landing');
-
-
-// Resource siswa
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('siswa', SiswaController::class);
-});
-
-
-
-// Custom Register (jika override)
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-
-// Dashboard setelah login + email terverifikasi
-Route::get('/home', [HomeController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('home');
-
-// Email Verification Routes (gunakan hanya versi ini)
+// Halaman verifikasi email
 Route::get('/email/verify', [VerificationController::class, 'show'])
     ->middleware('auth')
     ->name('verification.notice');
@@ -47,14 +36,63 @@ Route::post('/email/verification-notification', [VerificationController::class, 
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('/nilai', NilaiController::class);
-});
-Route::middleware(['auth', RoleMiddleware::class . ':guru'])->group(function () {
-    Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
-    Route::get('/guru/add', [GuruController::class, 'create'])->name('guru.add');
+// Override halaman register default (jika diperlukan)
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+// ===================================================
+// Umum / Landing / Dashboard
+// ===================================================
+
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+Route::get('/home', [HomeController::class, 'index'])
+    ->middleware('auth')
+    ->name('home');
+
+// ===================================================
+//  Siswa & Guru Akses Bersama
+// ===================================================
+
+Route::middleware(['auth', 'verified', 'role:siswa,guru'])->group(function () {
+    Route::resource('siswa', SiswaController::class);
 });
 
-Route::middleware(['auth', RoleMiddleware::class . ':guru'])->group(function () {
-    Route::get('/guru/add-siswa', [GuruController::class, 'create'])->name('guru.addSiswa');
+// ===================================================
+//  Guru Area
+// ===================================================
+
+Route::middleware(['auth', 'role:guru'])->group(function () {
+    Route::get('/guru/dashboard', [GuruController::class, 'index'])->name('guru.dashboard');
+    Route::get('/guru/add-siswa', [SiswaController::class, 'create'])->name('siswa.addSiswa');
+
+    Route::resource('/nilai', NilaiController::class);
+});
+
+// ===================================================
+// Admin Area
+// ===================================================
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Dashboard & Manajemen Role
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/edit-role', [AdminController::class, 'editRole'])->name('admin.edit-role');
+    Route::resource('subjects', SubjectController::class);
+
+    // Manajemen Siswa oleh Admin
+    Route::get('/admin/add-siswa', [SiswaController::class, 'create'])->name('siswa.addSiswa');
+    Route::post('/admin/siswa', [SiswaController::class, 'store'])->name('siswa.store');
+
+    // Manajemen Guru
+
+    Route::post('/admin/guru', [GuruController::class, 'store'])->name('guru.store');
+    Route::resource('guru', GuruController::class);
+});
+
+// ===================================================
+// Super Admin Area
+// ===================================================
+
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::get('/superadmin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
 });

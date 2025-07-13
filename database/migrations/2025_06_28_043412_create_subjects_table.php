@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Subject name (e.g., Math, English, Science)
             $table->timestamps();
+            $table->foreignId('guru_id')->constrained('gurus')->cascadeOnDelete();
         });
     }
 

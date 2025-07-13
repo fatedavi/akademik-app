@@ -12,8 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(RoleMiddleware::class); 
+        // ✅ Daftarkan alias middleware khusus
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();

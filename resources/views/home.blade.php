@@ -15,13 +15,15 @@
        @php
     $isSiswa = Auth::user()->role === 'siswa';
     $isGuru = Auth::user()->role === 'guru';
+    $isAdmin = Auth::user()->role === 'admin';
+    $isSuperAdmin = Auth::user()->role === 'super_admin';
 @endphp
 
 @if ($isSiswa)
     <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
         <div class="bg-blue-600 h-24 p-4 text-white flex items-center justify-between">
             <h2 class="text-xl font-semibold">
-                {{ $sudahInput ? 'Sudah Input' : 'Lengkapi Data Siswa' }}
+                {{ $sudahInput ? 'Sudah Melengkapi Data' : 'Lengkapi Data Siswa' }}
             </h2>
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
                  viewBox="0 0 24 24">
@@ -31,7 +33,7 @@
         </div>
         <div class="p-4">
             <p class="text-gray-700 mb-4">
-                {{ $sudahInput ? 'Lihat atau perbarui data siswa Anda.' : 'Anda belum melengkapi data siswa.' }}
+                {{ $sudahInput ? 'Lihat Data Kamu!' : 'Anda belum melengkapi data siswa.' }}
             </p>
 
             <a href="{{ route('siswa.index') }}"
@@ -53,9 +55,47 @@
         </div>
         <div class="p-4">
             <p class="text-gray-700 mb-4">Lihat dan kelola semua data siswa.</p>
-            <a href="{{ route('guru.index') }}"
+            <a href="{{ route('guru.dashboard') }}"
                class="inline-block px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
                 Kelola Sekarang
+            </a>
+        </div>
+    </div>
+@endif
+@if ($isAdmin)
+    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+        <div class="bg-green-600 h-24 p-4 text-white flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Manajemen Sistem</h2>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 10h11M9 21V3m0 0L4 8m5-5l5 5" />
+            </svg>
+        </div>
+        <div class="p-4">
+            <p class="text-gray-700 mb-4">Kelola data guru, siswa, kelas, jurusan, dan mata pelajaran.</p>
+            <a href="{{ route('admin.index') }}"
+               class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                Buka Panel Admin
+            </a>
+        </div>
+    </div>
+@endif
+@if ($isSuperAdmin)
+    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+        <div class="bg-green-600 h-24 p-4 text-white flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Manajemen Sistem SuperAdmin</h2>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 10h11M9 21V3m0 0L4 8m5-5l5 5" />
+            </svg>
+        </div>
+        <div class="p-4">
+            <p class="text-gray-700 mb-4">Kelola data guru, admin, siswa, kelas, jurusan, dan mata pelajaran.</p>
+            <a href="{{ route('superadmin.index') }}"
+               class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                Buka Panel Admin
             </a>
         </div>
     </div>

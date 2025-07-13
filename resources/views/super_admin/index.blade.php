@@ -6,14 +6,14 @@
         <h1 class="text-2xl font-bold text-blue-700 mb-4">Selamat datang, {{ Auth::user()->name }}</h1>
 
         <p class="text-gray-700 mb-6">
-            Anda login sebagai <strong>Guru</strong>. Berikut beberapa menu yang bisa Anda akses:
+            Anda login sebagai <strong>SuperAdmin</strong>. Berikut beberapa menu yang bisa Anda akses:
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Kelola Siswa -->
-            <a href="{{ route('siswa.addSiswa') }}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
+            <a href="{{ route('guru.addSiswa') }}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
                 <h3 class="font-semibold text-lg mb-2">Data Siswa</h3>
-                <p class="text-sm">Lihat data siswa.</p>
+                <p class="text-sm">Lihat dan kelola data siswa.</p>
             </a>
 
             <!-- Kelola Nilai -->
@@ -27,7 +27,6 @@
                 <h3 class="font-semibold text-lg mb-2">Mata Pelajaran</h3>
                 <p class="text-sm">Manajemen mata pelajaran (coming soon).</p>
             </a>
-            
         </div>
     </div>
 </div>
