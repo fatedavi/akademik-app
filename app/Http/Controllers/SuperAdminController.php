@@ -10,4 +10,9 @@ class SuperAdminController extends Controller
     {
         return view('super_admin.index');
     }
+    public function management()
+    {
+        // Logic for managing users, roles, etc.
+        return view('super_admin.management');
+    }
 }

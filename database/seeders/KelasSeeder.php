@@ -11,27 +11,19 @@ class KelasSeeder extends Seeder
 {
     public function run(): void
     {
-        // Pastikan ada data tingkat dan jurusan dulu
-        $tingkat10 = Tingkat::firstOrCreate(['nama' => 'X']);
-        $tingkat11 = Tingkat::firstOrCreate(['nama' => 'XI']);
-        $tingkat12 = Tingkat::firstOrCreate(['nama' => 'XII']);
+        $tingkats = Tingkat::all();    // e.g., X, XI, XII
+        $jurusans = Jurusan::all();    // e.g., RPL, TKJ, dsb.
 
-        $rpl = Jurusan::firstOrCreate(['nama' => 'Rekayasa Perangkat Lunak']);
-        $tkj = Jurusan::firstOrCreate(['nama' => 'Teknik Komputer dan Jaringan']);
-
-        // Tambahkan kelas
-        $dataKelas = [
-            ['nama' => 'X RPL 1', 'tingkat_id' => $tingkat10->id, 'jurusan_id' => $rpl->id],
-            ['nama' => 'X TKJ 1', 'tingkat_id' => $tingkat10->id, 'jurusan_id' => $tkj->id],
-            ['nama' => 'XI RPL 2', 'tingkat_id' => $tingkat11->id, 'jurusan_id' => $rpl->id],
-            ['nama' => 'XII TKJ 1', 'tingkat_id' => $tingkat12->id, 'jurusan_id' => $tkj->id],
-        ];
-
-        foreach ($dataKelas as $kelas) {
-            Kelas::updateOrCreate(
-                ['nama' => $kelas['nama']],
-                ['tingkat_id' => $kelas['tingkat_id'], 'jurusan_id' => $kelas['jurusan_id']]
-            );
+        foreach ($tingkats as $tingkat) {
+            foreach ($jurusans as $jurusan) {
+                for ($i = 1; $i <= 2; $i++) {
+                    Kelas::create([
+                        'tingkat_id' => $tingkat->id,
+                        'jurusan_id' => $jurusan->id,
+                        'nama' => 'Kelas ' . $i
+                    ]);
+                }
+            }
         }
     }
 }

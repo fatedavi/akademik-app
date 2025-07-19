@@ -11,7 +11,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Kelola Siswa -->
-            <a href="{{ route('siswa.addSiswa') }}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
+            <a href="{{ route('guru.list-siswa') }}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
                 <h3 class="font-semibold text-lg mb-2">Data Siswa</h3>
                 <p class="text-sm">Lihat data siswa.</p>
             </a>

@@ -54,5 +54,21 @@ class GuruController extends Controller
 
         return redirect()->route('guru.create')->with('success', 'Data guru berhasil dihapus');
     }
+    public function listSiswa(Request $request)
+    {
+        $kelasId = $request->kelas_id;
+
+        $query = Siswa::with(['kelas.tingkat', 'kelas.jurusan']);
+
+        if ($kelasId) {
+            $query->where('kelas_id', $kelasId);
+        }
+
+        $siswas = $query->get();
+        $kelasList = Kelas::with(['tingkat', 'jurusan'])->get();
+
+        return view('guru.list-siswa', compact('siswas', 'kelasList', 'kelasId'));
+    }
+
 
 }

@@ -13,6 +13,7 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\KelasController;
 
 // Aktifkan route bawaan Laravel termasuk email verification
 
@@ -53,9 +54,17 @@ Route::get('/home', [HomeController::class, 'index'])
 // ===================================================
 //  Siswa & Guru Akses Bersama
 // ===================================================
+Route::middleware(['auth', 'role:admin,guru'])->group(function () {
+    Route::resource('nilai', NilaiController::class);
+    Route::get('/nilai/siswa/{id}', [NilaiController::class, 'nilaiBySiswa']);
 
-Route::middleware(['auth', 'verified', 'role:siswa,guru'])->group(function () {
+});
+
+
+Route::middleware(['auth', 'verified', 'role:siswa,guru,admin'])->group(function () {
     Route::resource('siswa', SiswaController::class);
+        Route::post('/admin/siswa', [SiswaController::class, 'store'])->name('siswa.store');
+    
 });
 
 // ===================================================
@@ -64,9 +73,8 @@ Route::middleware(['auth', 'verified', 'role:siswa,guru'])->group(function () {
 
 Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/guru/dashboard', [GuruController::class, 'index'])->name('guru.dashboard');
-    Route::get('/guru/add-siswa', [SiswaController::class, 'create'])->name('siswa.addSiswa');
+    Route::get('/guru/list-siswa', [GuruController::class, 'listSiswa'])->name('guru.list-siswa');
 
-    Route::resource('/nilai', NilaiController::class);
 });
 
 // ===================================================
@@ -79,9 +87,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/edit-role', [AdminController::class, 'editRole'])->name('admin.edit-role');
     Route::resource('subjects', SubjectController::class);
 
+    //Kelas
+
+    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+    Route::get('/kelas/create', [KelasController::class, 'create'])->name('kelas.create');
+    Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+
+    Route::get('/kelas/{id}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
+    Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
     // Manajemen Siswa oleh Admin
     Route::get('/admin/add-siswa', [SiswaController::class, 'create'])->name('siswa.addSiswa');
-    Route::post('/admin/siswa', [SiswaController::class, 'store'])->name('siswa.store');
 
     // Manajemen Guru
 
@@ -95,4 +111,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('/superadmin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
+    Route::get('/superadmin/management', [SuperAdminController::class, 'management'])->name('superadmin.management');
 });

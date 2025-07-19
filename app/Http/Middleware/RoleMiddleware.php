@@ -1,5 +1,7 @@
 <?php
 
+// app/Http/Middleware/RoleMiddleware.php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -8,9 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check() || auth()->user()->role !== $role) {
+        if (!auth()->check() || !in_array(auth()->user()->role, $roles)) {
             abort(403, 'Unauthorized.');
         }
 
